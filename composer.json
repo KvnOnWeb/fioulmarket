@@ -11,10 +11,13 @@
         "files": [ "vendor/symfony/symfony/src/Symfony/Component/VarDumper/Resources/functions/dump.php" ]
     },
     "require": {
-        "php": ">=5.3.9",
+        "php": ">=5.5.9",
         "doctrine/doctrine-bundle": "~1.4",
         "doctrine/orm": "^2.4.8",
+        "friendsofsymfony/rest-bundle": "2.1",
+        "hadesarchitect/json-schema-bundle": "1.0.0",
         "incenteev/composer-parameter-handler": "~2.0",
+        "nelmio/api-doc-bundle": "^2.13",
         "sensio/distribution-bundle": "~4.0",
         "sensio/framework-extra-bundle": "^3.0.2",
         "symfony/monolog-bundle": "^3.0.2",
@@ -45,7 +48,7 @@
     "config": {
         "bin-dir": "bin",
         "platform": {
-            "php": "5.3.9"
+            "php": "7.0.12"
         },
         "sort-packages": true
     },

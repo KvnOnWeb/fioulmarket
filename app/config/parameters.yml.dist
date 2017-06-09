@@ -17,3 +17,9 @@ parameters:
 
     # A secret key that's used to generate certain security-related tokens
     secret: ThisTokenIsNotSoSecretChangeIt
+
+    # Json-schema directory path
+    fioulmarket.price.json_schema.path: "%kernel.root_dir%/../src/FioulMarket/PriceBundle/Resources/json-schema/"
+
+    # Validation schema
+    fioulmarket.price.json_schema.path.price: "price-validation-schema.json"

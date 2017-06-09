@@ -1,0 +1,29 @@
+{
+  "title": "Liste des prix en fonction de la ville et de la date",
+  "type": "array",
+  "items": {
+    "title": "Element",
+    "type": "object",
+    "properties": {
+      "postal_code": {
+        "description": "Code postal de la ville",
+        "type": "integer"
+      },
+      "start_date": {
+        "format": "date-time",
+        "type": "string",
+        "description": "Recurrence date"
+      },
+      "end_date": {
+        "format": "date-time",
+        "type": "string",
+        "description": "Recurrence date"
+      },
+    },
+    "required": [
+      "postal_code",
+      "start_date",
+      "end_date"
+    ]
+  }
+}
