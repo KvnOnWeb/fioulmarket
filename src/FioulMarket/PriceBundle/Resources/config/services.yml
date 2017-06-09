@@ -5,7 +5,19 @@ services:
         arguments:
             - FioulMarket\PriceBundle\Entity\City
 
+    fioulmarket.price.repository.price:
+            class: Doctrine\ORM\EntityRepository
+            factory: ["@doctrine.orm.entity_manager", getRepository]
+            arguments:
+                - FioulMarket\PriceBundle\Entity\Price
+
     fioulmarket.price.service.city:
         class: FioulMarket\PriceBundle\Service\CityService
         arguments:
             - "@fioulmarket.price.repository.city"
+
+    fioulmarket.price.service.price:
+        class: FioulMarket\PriceBundle\Service\PriceService
+        arguments:
+            - "@fioulmarket.price.repository.price"
+

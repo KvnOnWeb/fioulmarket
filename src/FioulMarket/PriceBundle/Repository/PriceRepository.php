@@ -2,7 +2,9 @@
 
 namespace FioulMarket\PriceBundle\Repository;
 
+use DateTime;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query;
 
 /**
  * PriceRepository.
@@ -12,4 +14,23 @@ use Doctrine\ORM\EntityRepository;
  */
 class PriceRepository extends EntityRepository
 {
+    public function findByCityAndDate($postalCode, DateTime $startDate, DateTime $endDate, $energyName = 'fuel')
+    {
+        return $this->createQueryBuilder('p')
+            ->select('c.postalCode, p.date, p.price')
+            ->innerJoin('p.city', 'c')
+            ->innerJoin('p.energy', 'e')
+            ->where('c.postalCode = :postalcode')
+            ->andWhere('p.date >= :startdate')
+            ->andWhere('p.date <= :enddate')
+            ->andWhere('e.name = :energy')
+            ->setParameter('postalcode', $postalCode)
+            ->setParameter('energy', $energyName)
+            ->setParameter('startdate', $startDate)
+            ->setParameter('enddate', $endDate)
+            ->distinct()
+            ->getQuery()
+            ->getResult(Query::HYDRATE_ARRAY)
+        ;
+    }
 }

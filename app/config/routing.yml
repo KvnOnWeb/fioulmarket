@@ -1,3 +1,7 @@
-app:
-    resource: '@PriceBundle/Controller/'
-    type: annotation
+NelmioApiDocBundle:
+    resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
+    prefix:   /api/doc
+
+soyouweb_wallet_api:
+    resource: "@PriceBundle/Resources/config/routing.yml"
+    prefix:   /api/

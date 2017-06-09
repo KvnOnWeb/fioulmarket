@@ -1,0 +1,4 @@
+fioulmarket_price_api:
+    type: rest
+    resource: FioulMarket\PriceBundle\Controller\ApiController
+    prefix:
