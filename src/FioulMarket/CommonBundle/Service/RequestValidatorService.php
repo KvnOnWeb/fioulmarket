@@ -1,4 +1,5 @@
 <?php
+
 namespace FioulMarket\CommonBundle\Service;
 
 use HadesArchitect\JsonSchemaBundle\Validator\ValidatorService;
@@ -21,7 +22,7 @@ class RequestValidatorService
     public function __construct(ValidatorService $validator, $schemaPath = '')
     {
         $this->schemaPath = $schemaPath;
-        $this->validator  = $validator;
+        $this->validator = $validator;
     }
 
     /**
@@ -32,8 +33,9 @@ class RequestValidatorService
      */
     public function isValidRequest(Request $request, $validatorSchema)
     {
-        $data   = $request->getContent();
+        $data = $request->getContent();
         $schema = $this->getSchema($validatorSchema);
+
         return $this->validator->isValid($data, $schema);
     }
 
@@ -46,7 +48,7 @@ class RequestValidatorService
      */
     private function getSchema($schema)
     {
-        $schemaValidationPath = 'file://' . $this->schemaPath . $schema;
+        $schemaValidationPath = 'file://'.$this->schemaPath.$schema;
         if (!file_exists($schemaValidationPath)) {
             throw new \Exception(sprintf('The json validation schema %s does not exist', $schemaValidationPath), 500);
         }
@@ -54,13 +56,14 @@ class RequestValidatorService
         if (false === $jsonSchema) {
             throw new \Exception(sprintf('The json schema %s is not valid', $schemaValidationPath), 500);
         }
+
         return $jsonSchema;
     }
 
     /**
      * @param string $schemaPath
      */
-    public function setSchemaPath(string $schemaPath)
+    public function setSchemaPath($schemaPath)
     {
         $this->schemaPath = $schemaPath;
     }

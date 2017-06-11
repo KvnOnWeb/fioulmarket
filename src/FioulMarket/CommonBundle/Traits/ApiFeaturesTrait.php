@@ -16,7 +16,7 @@ trait ApiFeaturesTrait
     {
         return View::create([
             'count' => sizeof($data),
-            'data' => $data
+            'data' => $data,
         ], Response::HTTP_OK);
     }
 
