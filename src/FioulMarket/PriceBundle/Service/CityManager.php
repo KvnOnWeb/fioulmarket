@@ -2,7 +2,7 @@
 
 namespace FioulMarket\PriceBundle\Service;
 
-use Doctrine\ORM\EntityRepository;
+use Doctrine\Common\Persistence\ObjectManager;
 use FioulMarket\PriceBundle\Entity\City;
 
 /**
@@ -10,16 +10,29 @@ use FioulMarket\PriceBundle\Entity\City;
  *
  * @since  2017-06-08
  */
-class CityService
+class CityManager
 {
-    protected $repository;
+    protected $className;
+    protected $entityManager;
 
     /**
-     * @param EntityRepository $repository
+     * @param ObjectManager $entityManager
      */
-    public function __construct(EntityRepository $repository)
+    public function __construct(ObjectManager $entityManager, $className)
     {
-        $this->repository = $repository;
+        $this->className = $className;
+        $this->entityManager = $entityManager;
+    }
+
+    /**
+     * @param $postalCode
+     *
+     * @return City
+     */
+    public function create($postalCode)
+    {
+        return (new $this->className())
+            ->setPostalCode($postalCode);
     }
 
     /**
@@ -31,7 +44,9 @@ class CityService
     public function getCitiesByPostalCode()
     {
         $citiesWithKey = [];
-        $cities = $this->repository->findAll();
+        $cities = $this->entityManager
+            ->getRepository($this->className)
+            ->findAll();
 
         foreach ($cities as $city) {
             /* @var City $city */

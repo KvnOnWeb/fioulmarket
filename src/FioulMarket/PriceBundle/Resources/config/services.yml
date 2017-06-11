@@ -1,23 +1,42 @@
+parameters:
+    fioulmarket.price.entity_class.city: 'FioulMarket\PriceBundle\Entity\City'
+    fioulmarket.price.entity_class.energy: 'FioulMarket\PriceBundle\Entity\Energy'
+    fioulmarket.price.entity_class.price: 'FioulMarket\PriceBundle\Entity\Price'
+
 services:
-    fioulmarket.price.repository.city:
-        class: Doctrine\ORM\EntityRepository
-        factory: ["@doctrine.orm.entity_manager", getRepository]
+    fioulmarket.price.entity_manager.city:
+        class: Doctrine\Common\Persistence\ObjectManager
+        factory: ["@doctrine", getManagerForClass]
         arguments:
-            - FioulMarket\PriceBundle\Entity\City
+            - "%fioulmarket.price.entity_class.city%"
 
-    fioulmarket.price.repository.price:
-            class: Doctrine\ORM\EntityRepository
-            factory: ["@doctrine.orm.entity_manager", getRepository]
-            arguments:
-                - FioulMarket\PriceBundle\Entity\Price
-
-    fioulmarket.price.service.city:
-        class: FioulMarket\PriceBundle\Service\CityService
+    fioulmarket.price.entity_manager.energy:
+        class: Doctrine\Common\Persistence\ObjectManager
+        factory: ["@doctrine", getManagerForClass]
         arguments:
-            - "@fioulmarket.price.repository.city"
+            - "%fioulmarket.price.entity_class.energy%"
 
-    fioulmarket.price.service.price:
-        class: FioulMarket\PriceBundle\Service\PriceService
+    fioulmarket.price.entity_manager.price:
+        class: Doctrine\Common\Persistence\ObjectManager
+        factory: ["@doctrine", getManagerForClass]
         arguments:
-            - "@fioulmarket.price.repository.price"
+            - "%fioulmarket.price.entity_class.price%"
+
+    fioulmarket.price.manager.city:
+        class: FioulMarket\PriceBundle\Service\CityManager
+        arguments:
+            - "@fioulmarket.price.entity_manager.city"
+            - "%fioulmarket.price.entity_class.city%"
+
+    fioulmarket.price.manager.energy:
+        class: FioulMarket\PriceBundle\Service\EnergyManager
+        arguments:
+            - "@fioulmarket.price.entity_manager.energy"
+            - "%fioulmarket.price.entity_class.energy%"
+
+    fioulmarket.price.manager.price:
+        class: FioulMarket\PriceBundle\Service\PriceManager
+        arguments:
+            - "@fioulmarket.price.entity_manager.price"
+            - "%fioulmarket.price.entity_class.price%"
 

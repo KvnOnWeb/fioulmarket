@@ -3,7 +3,6 @@
 namespace FioulMarket\PriceBundle\Controller;
 
 use FioulMarket\CommonBundle\Traits\ApiFeaturesTrait;
-use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -11,14 +10,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class UserController
+ * Class UserController.
  */
 class ApiController extends FOSRestController
 {
     use ApiFeaturesTrait;
 
     /**
-     * Récupére les prix
+     * Récupére les prix.
      *
      * @ApiDoc(
      *     section="Price",
@@ -41,20 +40,22 @@ class ApiController extends FOSRestController
      * )
      *
      * @param Request $request
+     *
      * @return View|mixed
      */
     public function getPriceAction(Request $request)
     {
         try {
             $postalCode = $request->get('postal_code');
-            $startDate  = $request->get('start_date');
-            $endDate    = $request->get('end_date');
+            $startDate = $request->get('start_date');
+            $endDate = $request->get('end_date');
 
-            $data = $this->get('fioulmarket.price.service.price')->getPriceByCityAndDate($postalCode, $startDate, $endDate);
+            $data = $this->get('fioulmarket.price.manager.price')->getPriceByCityAndDate($postalCode, $startDate, $endDate);
 
             $view = $this->getDataView($data);
         } catch (\Exception $e) {
-            $view = $this->getExceptionView($e->getMessage(), $e->getCode());
+            $codeHttp = ($e->getCode() > 0) ? $e->getCode() : Response::HTTP_INTERNAL_SERVER_ERROR;
+            $view = $this->getExceptionView($e->getMessage(), $codeHttp);
         }
 
         return $this->handleView($view);

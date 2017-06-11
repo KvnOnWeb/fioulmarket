@@ -2,9 +2,7 @@
 
 namespace FioulMarket\PriceBundle\Command;
 
-use FioulMarket\PriceBundle\Entity\City;
 use FioulMarket\PriceBundle\Entity\Energy;
-use FioulMarket\PriceBundle\Entity\Price;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -69,55 +67,50 @@ class ImportCommand extends ContainerAwareCommand
      *
      * @return bool
      */
-    protected function import($filename, $energy, $details, OutputInterface $output)
+    protected function import($filename, Energy $energy, $details, OutputInterface $output)
     {
-        // Details => Lancement d'une progress bar
+        // Manager
+        $cityManager  = $this->getContainer()->get('fioulmarket.price.manager.city');
+        $priceManager = $this->getContainer()->get('fioulmarket.price.manager.price');
+
+        // ProgressBar
         if ($details) {
-            $nbLines = $this->countLines($filename);
+            $nbLines  = $this->countLines($filename);
             $progress = new ProgressBar($output, $nbLines);
             $progress->start();
         }
 
-        $cities = $this->getContainer()->get('fioulmarket.price.service.city')->getCitiesByPostalCode();
+        $cities = $cityManager->getCitiesByPostalCode();
 
         if (
             file_exists($filename)
             && is_readable($filename)
             && ($handle = fopen($filename, 'r')) !== false
         ) {
-            $em = $this->getContainer()->get('doctrine.orm.entity_manager');
             $header = fgetcsv($handle, 1000, self::COLUMN_DELIMITER);
 
             // Contenu
             $count = 0;
             while (($row = fgetcsv($handle, 1000, self::COLUMN_DELIMITER)) !== false) {
                 $postalCode = $row[self::COLUMN_POSTAL_CODE];
-                $amount = $row[self::COLUMN_PRICE];
-                $date = $row[self::COLUMN_DATE];
+                $amount     = $row[self::COLUMN_PRICE];
+                $date       = $row[self::COLUMN_DATE];
 
-                // Objet city (isset plus performant que in_array)
+                // City (Optimisation : isset mieux que in_array)
                 if (isset($cities[$postalCode])) {
                     $city = $cities[$postalCode];
                 } else {
-                    $city = new City();
-                    $city->setPostalCode($postalCode);
+                    $city = $cityManager->create($postalCode);
                     $cities[$postalCode] = $city;
                 }
 
                 // Price
-                $price = new Price();
-                $price->setEnergy($energy);
-                $price->setCity($city);
-                $price->setPrice($amount);
-                $price->setDate(new \DateTime($date));
-
-                // Persist
-                $em->merge($price);
+                $price = $priceManager->create($amount, $city, $energy, $date);
+                $priceManager->save($price, false);
 
                 // Optimisation Doctrine
                 if (($count % self::OPTIMIZED_SIZE) === 0) {
-                    $em->flush();
-                    $em->clear();
+                    $priceManager->flushAndClear();
 
                     if ($details) {
                         $progress->advance(self::OPTIMIZED_SIZE);
@@ -130,11 +123,11 @@ class ImportCommand extends ContainerAwareCommand
                 ++$count;
             }
 
-            $em->flush();
-            $em->clear();
+            $priceManager->flushAndClear();
 
             fclose($handle);
 
+            // Fin ProgressBar
             if ($details) {
                 $progress->finish();
             }
@@ -158,7 +151,7 @@ class ImportCommand extends ContainerAwareCommand
         $count = 0;
 
         while (fgets($file) !== false) {
-            $count++;
+            ++$count;
         }
 
         fclose($file);
@@ -169,25 +162,16 @@ class ImportCommand extends ContainerAwareCommand
     /**
      * @param InputInterface $input
      *
-     * @return Energy|object
+     * @return Energy
      */
     protected function prepareEnergyArgument(InputInterface $input)
     {
-        $energyName = (empty($input->getArgument('energy'))) ? self::DEFAULT_ENERGY : $input->getArgument('energy');
-        $energy = $this
-            ->getContainer()
-            ->get('doctrine')
-            ->getManager()
-            ->getRepository(Energy::class)
-            ->findOneBy(['name' => $energyName]);
+        $energyManager = $this->getContainer()->get('fioulmarket.price.manager.energy');
+        $energyName    = (empty($input->getArgument('energy'))) ? self::DEFAULT_ENERGY : $input->getArgument('energy');
+        $energy        = $energyManager->get($energyName);
 
         if (empty($energy)) {
-            $energy = new Energy();
-            $energy->setName($energyName);
-
-            $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-            $em->persist($energy);
-            $em->flush();
+            $energy = $energyManager->save($energyName);
         }
 
         return $energy;

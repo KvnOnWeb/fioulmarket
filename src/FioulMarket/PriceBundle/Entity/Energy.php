@@ -34,8 +34,9 @@ class Energy
      */
     private $prices;
 
-    public function __construct()
+    public function __construct($name = '')
     {
+        $this->name = $name;
         $this->prices = new ArrayCollection();
     }
 
