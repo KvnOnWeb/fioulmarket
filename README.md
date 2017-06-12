@@ -1,6 +1,8 @@
 # Fioulmarket
 Exercice pour fioulmarket.
 
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/018643f7-f772-44e8-a922-e1f6a7657b09/big.png)](https://insight.sensiolabs.com/projects/018643f7-f772-44e8-a922-e1f6a7657b09)
+
 ## 1. Objectifs et détails
 
 Le projet a été fait avec pour objectif d'avoir un modèle de données évolutif tout en conservant de bonnes performances lors de l'import.
@@ -23,5 +25,3 @@ Suite à l'installation du projet et l'execution du composer install vous pouvez
     - Les options : `--details` utilise la progressBar symfony (détails de l'avancement et consommation mémoire).
     
 /!\ Dans un souci de performances bien executer la commande en mode 'prod' sinon la mémoire explose avec le debug activé. /!\
-
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/018643f7-f772-44e8-a922-e1f6a7657b09/big.png)](https://insight.sensiolabs.com/projects/018643f7-f772-44e8-a922-e1f6a7657b09)
