@@ -70,12 +70,12 @@ class ImportCommand extends ContainerAwareCommand
     protected function import($filename, Energy $energy, $details, OutputInterface $output)
     {
         // Manager
-        $cityManager  = $this->getContainer()->get('fioulmarket.price.manager.city');
+        $cityManager = $this->getContainer()->get('fioulmarket.price.manager.city');
         $priceManager = $this->getContainer()->get('fioulmarket.price.manager.price');
 
         // ProgressBar
         if ($details) {
-            $nbLines  = $this->countLines($filename);
+            $nbLines = $this->countLines($filename);
             $progress = new ProgressBar($output, $nbLines);
             $progress->start();
         }
@@ -87,14 +87,14 @@ class ImportCommand extends ContainerAwareCommand
             && is_readable($filename)
             && ($handle = fopen($filename, 'r')) !== false
         ) {
-            $header = fgetcsv($handle, 1000, self::COLUMN_DELIMITER);
+            $row = fgetcsv($handle, 1000, self::COLUMN_DELIMITER); // Header
+            $count = 0; // Count ProgressBar
 
-            // Contenu
-            $count = 0;
+            // Pour chaque ligne
             while (($row = fgetcsv($handle, 1000, self::COLUMN_DELIMITER)) !== false) {
                 $postalCode = $row[self::COLUMN_POSTAL_CODE];
-                $amount     = $row[self::COLUMN_PRICE];
-                $date       = $row[self::COLUMN_DATE];
+                $amount = $row[self::COLUMN_PRICE];
+                $date = $row[self::COLUMN_DATE];
 
                 // City (Optimisation : isset mieux que in_array)
                 if (isset($cities[$postalCode])) {
@@ -167,8 +167,8 @@ class ImportCommand extends ContainerAwareCommand
     protected function prepareEnergyArgument(InputInterface $input)
     {
         $energyManager = $this->getContainer()->get('fioulmarket.price.manager.energy');
-        $energyName    = (empty($input->getArgument('energy'))) ? self::DEFAULT_ENERGY : $input->getArgument('energy');
-        $energy        = $energyManager->get($energyName);
+        $energyName = (empty($input->getArgument('energy'))) ? self::DEFAULT_ENERGY : $input->getArgument('energy');
+        $energy = $energyManager->get($energyName);
 
         if (empty($energy)) {
             $energy = $energyManager->save($energyName);
