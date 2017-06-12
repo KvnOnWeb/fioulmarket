@@ -59,7 +59,7 @@ class PriceManager
     }
 
     /**
-     * Flush et clear Doctrine (reduit consommation memoire)
+     * Flush et clear Doctrine (reduit consommation memoire).
      */
     public function flushAndClear()
     {
