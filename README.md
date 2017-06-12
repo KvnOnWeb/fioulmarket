@@ -1,7 +1,7 @@
 # Fioulmarket
 Exercice pour fioulmarket.
 
-[![SensioLabsInsight](https://insight.sensiolabs.com/projects/018643f7-f772-44e8-a922-e1f6a7657b09/big.png)](https://insight.sensiolabs.com/projects/018643f7-f772-44e8-a922-e1f6a7657b09)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/018643f7-f772-44e8-a922-e1f6a7657b09/small.png)](https://insight.sensiolabs.com/projects/018643f7-f772-44e8-a922-e1f6a7657b09)
 
 ## 1. Objectifs et détails
 
